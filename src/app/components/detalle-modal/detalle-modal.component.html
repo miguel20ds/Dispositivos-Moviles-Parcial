@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Detalle</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <img [src]="producto.imagen" [alt]="producto.titulo" style="width: 100%; border-radius: 8px;" />
+
+  <h2>{{ producto.titulo }}</h2>
+  <p>Album {{ producto.album }}</p>
+
+  <p>
+    Stock actual:
+    <ion-badge [color]="colorStock(producto.stock)">{{ producto.stock }}</ion-badge>
+  </p>
+
+  <h3>Reabastecer</h3>
+  <ion-input
+    type="number"
+    label="Cantidad a agregar"
+    labelPlacement="floating"
+    fill="outline"
+    min="1"
+    [(ngModel)]="cantidad"
+  ></ion-input>
+
+  <ion-button
+    expand="block"
+    class="ion-margin-top"
+    [disabled]="!cantidad || cantidad <= 0"
+    (click)="reabastecer()"
+  >
+    Reabastecer
+  </ion-button>
+</ion-content>

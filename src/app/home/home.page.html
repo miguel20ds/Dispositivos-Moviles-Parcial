@@ -1,21 +1,85 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title> Blank </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Inventario de fotos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>
-      Start with Ionic
-      <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a>
-    </p>
-  </div>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Stock total (segun filtros)</ion-card-subtitle>
+      <ion-card-title>{{ stockTotal }} unidades</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Mostrando {{ productosFiltrados.length }} de {{ productosOriginales.length }} productos
+    </ion-card-content>
+  </ion-card>
+
+  <ion-grid>
+    <ion-row>
+  <ion-col size="12" size-md="4">
+    <ion-searchbar
+      placeholder="Buscar por titulo"
+      [ngModel]="busqueda"
+      (ngModelChange)="busqueda = $event; aplicarFiltros()"
+    ></ion-searchbar>
+  </ion-col>
+
+  <ion-col size="12" size-md="3">
+    <ion-select
+      label="Album"
+      labelPlacement="floating"
+      fill="outline"
+      interface="popover"
+      [ngModel]="albumSeleccionado"
+      (ngModelChange)="albumSeleccionado = $event; aplicarFiltros()"
+    >
+      <ion-select-option [value]="null">Todos</ion-select-option>
+      @for (a of albumes; track a) {
+        <ion-select-option [value]="a">Album {{ a }}</ion-select-option>
+      }
+    </ion-select>
+  </ion-col>
+
+  <ion-col size="12" size-md="3">
+    <ion-input
+      type="number"
+      label="Stock mínimo"
+      labelPlacement="floating"
+      fill="outline"
+      min="0"
+      [ngModel]="stockMinimo"
+      (ionInput)="onStockMinimo($event)"
+    ></ion-input>
+  </ion-col>
+
+  <ion-col size="12" size-md="2">
+    <ion-button expand="block" fill="outline" (click)="limpiarFiltros()">Limpiar</ion-button>
+  </ion-col>
+</ion-row>
+  </ion-grid>
+
+  @if (cargando) {
+    <div class="ion-text-center"><ion-spinner></ion-spinner></div>
+  }
+  @if (error) {
+    <p>{{ error }}</p>
+  }
+
+  <ion-list>
+    @for (p of productosFiltrados; track p.id) {
+      <ion-item button (click)="abrirDetalle(p)">
+        <ion-avatar slot="start">
+          <img [src]="p.miniatura" [alt]="p.titulo" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ p.titulo }}</h2>
+          <p>Album {{ p.album }}</p>
+        </ion-label>
+        <ion-badge slot="end" [color]="colorStock(p.stock)">{{ p.stock }}</ion-badge>
+      </ion-item>
+    }
+  </ion-list>
+
 </ion-content>
